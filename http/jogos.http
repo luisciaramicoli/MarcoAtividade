@@ -1,0 +1,34 @@
+### Listar todos os jogos
+GET http://localhost:3001/jogos
+
+### Cadastrar novo jogo
+# Certifique-se de que o idGenero 1 e plataformasIds [1, 2] existem
+POST http://localhost:3001/jogos
+Content-Type: application/json
+
+{
+    "titulo": "Elden Ring",
+    "idGenero": 1,
+    "plataformasIds": [1, 2]
+}
+
+### Atualizar jogo (PUT)
+PUT http://localhost:3001/jogos/1
+Content-Type: application/json
+
+{
+    "titulo": "Elden Ring: Shadow of the Erdtree",
+    "idGenero": 1,
+    "plataformasIds": [1]
+}
+
+### Atualizar jogo (PATCH)
+PATCH http://localhost:3001/jogos/1
+Content-Type: application/json
+
+{
+    "titulo": "Elden Ring - GOTY"
+}
+
+### Remover jogo
+DELETE http://localhost:3001/jogos/1

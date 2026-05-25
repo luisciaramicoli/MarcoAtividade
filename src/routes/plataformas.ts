@@ -1,63 +1,64 @@
 import { Router, Request, Response } from "express";
-
 import { prisma } from "../prisma";
 
 const router = Router();
 
-// Listar todos os gêneros
+// Listar todas as plataformas
 router.get("/", async (req: Request, res: Response) => {
     try {
-        const generos = await prisma.genero.findMany({
+        const plataformas = await prisma.plataforma.findMany({
             include: {
                 jogos: true
             }
         });
-        res.json(generos);
+        res.json(plataformas);
     } catch (ex) {
+        console.error("Erro ao buscar plataformas:", ex);
         res.status(500).json({
-            erro: "Erro ao buscar gêneros"
+            erro: "Erro ao buscar plataformas"
         });
     }
 });
 
-// Buscar um gênero por ID
+// Buscar uma plataforma por ID
 router.get("/:id", async (req: Request, res: Response) => {
     const id = Number(req.params.id);
 
     try {
-        const genero = await prisma.genero.findUnique({
+        const plataforma = await prisma.plataforma.findUnique({
             where: { id },
             include: {
                 jogos: true
             }
         });
 
-        if (!genero) {
+        if (!plataforma) {
             return res.status(404).json({
-                erro: "Gênero não encontrado"
+                erro: "Plataforma não encontrada"
             });
         }
 
-        res.json(genero);
+        res.json(plataforma);
     } catch (ex) {
+        console.error("Erro ao buscar plataforma:", ex);
         res.status(500).json({
-            erro: "Erro ao buscar gênero"
+            erro: "Erro ao buscar plataforma"
         });
     }
 });
 
-// Cadastrar um novo gênero
+// Cadastrar uma nova plataforma
 router.post("/", async (req: Request, res: Response) => {
     const { nome } = req.body;
 
     if (!nome || typeof nome !== "string" || nome.trim() === "") {
         return res.status(400).json({
-            erro: "O campo nome do gênero é obrigatório."
+            erro: "O campo nome da plataforma é obrigatório."
         });
     }
 
     try {
-        const genero = await prisma.genero.create({
+        const plataforma = await prisma.plataforma.create({
             data: {
                 nome: nome.trim()
             },
@@ -66,27 +67,27 @@ router.post("/", async (req: Request, res: Response) => {
             }
         });
 
-        res.status(201).json(genero);
+        res.status(201).json(plataforma);
     } catch (ex) {
         res.status(500).json({
-            erro: "Erro ao cadastrar gênero."
+            erro: "Erro ao cadastrar plataforma."
         });
     }
 });
 
-// Atualizar um gênero
+// Atualizar uma plataforma
 router.put("/:id", async (req: Request, res: Response) => {
     const id = Number(req.params.id);
     const { nome } = req.body;
 
     if (!nome || typeof nome !== "string" || nome.trim() === "") {
         return res.status(400).json({
-            erro: "O campo nome do gênero é obrigatório."
+            erro: "O campo nome da plataforma é obrigatório."
         });
     }
 
     try {
-        const genero = await prisma.genero.update({
+        const plataforma = await prisma.plataforma.update({
             where: { id },
             data: {
                 nome: nome.trim()
@@ -96,39 +97,37 @@ router.put("/:id", async (req: Request, res: Response) => {
             }
         });
 
-        res.json(genero);
+        res.json(plataforma);
     } catch (ex) {
-        // P2025 é o código do Prisma para "Record to update not found"
         if ((ex as any).code === 'P2025') {
             return res.status(404).json({
-                erro: "Gênero não encontrado"
+                erro: "Plataforma não encontrada"
             });
         }
         res.status(500).json({
-            erro: "Erro ao atualizar gênero."
+            erro: "Erro ao atualizar plataforma."
         });
     }
 });
 
-// Remover um gênero
+// Remover uma plataforma
 router.delete("/:id", async (req: Request, res: Response) => {
     const id = Number(req.params.id);
 
     try {
-        await prisma.genero.delete({
+        await prisma.plataforma.delete({
             where: { id }
         });
 
         res.status(204).send();
     } catch (ex) {
-        // P2025 é o código do Prisma para "Record to delete not found"
         if ((ex as any).code === 'P2025') {
             return res.status(404).json({
-                erro: "Gênero não encontrado"
+                erro: "Plataforma não encontrada"
             });
         }
         res.status(500).json({
-            erro: "Erro ao remover gênero."
+            erro: "Erro ao remover plataforma."
         });
     }
 });
